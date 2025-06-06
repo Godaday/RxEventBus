@@ -1,0 +1,129 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userprefs
+*.ncb
+*.resource
+*.sdf
+*.cscfg
+*.pubxml
+*.pfx
+*.bak
+*.resharper
+*.dotSettings
+*.pidb
+*.booproj
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+[Bb]in/
+[Oo]bj/
+[Tt]emp/
+*.tmp
+*.log
+*.err
+*.scc
+*.vspscc
+*.vssscc
+*.builds
+*.buildlog
+*.fsproj.user
+*.csproj.user
+*.vbproj.user
+
+# Packages
+packages/
+*.nupkg
+*.snk
+*.vsmacros
+*.webtest
+*.testsettings
+*.trx
+*.vsmdi
+*.fxcop
+*.fxcopcmd
+
+# Rider
+.idea/
+
+# .NET Core specific
+project.lock.json
+project.fragment.lock.json
+artifacts/
+Generated_Code/
+*.xproj
+*.yproj
+*.npm
+*.zip
+*.tar.gz
+*.bz2
+*.rar
+*.7z
+*.gz
+
+# For .NET Core tools
+.config/
+.nuget/
+.templateengine/
+
+# Other common files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# User-specific files that are often ignored
+*.cache
+*.com
+*.class
+*.dll
+*.exe
+*.obj
+*.pdb
+*.lib
+*.exp
+*.ilk
+*.idb
+*.opt
+*.sbr
+*.tlb
+*.tlh
+*.tli
+*.ncb
+*.pch
+*.ipch
+*.aps
+*.bsc
+*.map
+*.res
+*.stackdump
+*.vcproj.*.opendb
+*.vcxproj.*.opendb
+*.opendb
+*.VC.db
+*.sdf
+*.opensdf
+
+# Azure Cloud Services
+ServiceConfiguration.Local.cscfg
+ServiceDefinition.csdef
+# This file contains sensitive information for publishing to Azure
+# publishsettings
+*.publishsettings
+
+# Mac/Linux files
+._*
+.localized
+
+# Debugger Visualizers
+.vsdebuggerstate
+
+# Code analysis results
+*.ruleset
+
+# VS Code
+.vscode/
+
+# Editor config (if you don't want to commit it)
+.editorconfig
