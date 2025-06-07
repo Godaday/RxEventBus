@@ -12,9 +12,14 @@
     <Description>A lightweight Rx.NET EventBus for decoupling modules.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/Godaday/RxEventBus</RepositoryUrl>
+
+    <PackageReadmeFile>README.md</PackageReadmeFile> <!-- 指定 README 文件名 -->
+    <RepositoryUrl>https://github.com/Godaday/RxEventBus</RepositoryUrl> <!-- 确保此URL指向您的GitHub仓库 -->
+
   </PropertyGroup>
 
   <ItemGroup>
+   <None Include="README.md" Pack="true" PackagePath="\" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.5" />
     <PackageReference Include="System.Reactive" Version="6.0.1" />
   </ItemGroup>
