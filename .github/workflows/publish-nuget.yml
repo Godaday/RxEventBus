@@ -2,14 +2,12 @@ name: Publish NuGet Package
 
 on:
   push:
-    # 仅在打上版本标签（如 v1.0.0, v1.0.1-beta）时触发此工作流。
-    # 这种方式通常用于发布官方 NuGet 包，使版本与 Git 标签一致。
-    # 如果需要为每次 main 分支提交生成 CI/快照包，可以考虑单独的工作流或不同的版本策略。
+   
     tags:
       - 'v*.*.*'
 
 env:
-  PROJECT_PATH: 'RxEventBus/RxEventBus.Core/RxEventBus.Core.csproj' # 替换为您的项目文件路径
+  PROJECT_PATH: 'RxEventBus/RxEventBus.Core/RxEventBus.Core.csproj' 
   BUILD_CONFIGURATION: 'Release' # 构建配置
 
 jobs:
@@ -23,7 +21,7 @@ jobs:
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4 # 设置 .NET SDK
       with:
-        dotnet-version: '8.0' # 指定您的 .NET 版本，例如 '6.0.x', '7.0.x', '8.0.x'
+        dotnet-version: '8.0' # 指定您的 .NET 版本，
 
     - name: Restore dependencies
       run: dotnet restore ${{ env.PROJECT_PATH }} # 恢复项目依赖
