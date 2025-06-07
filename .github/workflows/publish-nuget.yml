@@ -9,85 +9,62 @@ name: Publish NuGet Package
 on:
   push:
     # 仅当推送的是符合 'v*.*.*' 模式的 Git 标签时触发。
-    # 示例标签：v1.0.0, v1.0.1-beta, v2.0.0。
-    # 这种方式确保了发布的 NuGet 包版本与 Git 标签版本严格对应，
-    # 适用于正式版本发布。如果需要为每次提交生成快照或CI包，
-    # 则需要配置不同的触发器和版本策略。
     tags:
-      - 'v*.*.*' # 匹配所有以 'v' 开头后跟一个或多个数字和点号的标签
+      - 'v*.*.*' # 匹配类似 v1.0.0, v2.1.5 等标签
 
 # 环境变量：定义在此工作流中可全局使用的变量
 env:
-  # 项目文件 (.csproj) 的相对路径。
-  # 请务必根据您的实际项目结构进行调整。
+  # 请仔细核对您的项目路径，确保是正确的 .csproj 文件路径
   PROJECT_PATH: 'RxEventBus/RxEventBus.Core/RxEventBus.Core.csproj'
   # 构建项目的配置（例如 'Release' 或 'Debug'）。
-  # 发布 NuGet 包通常使用 'Release' 配置。
   BUILD_CONFIGURATION: 'Release' 
 
-# 作业定义：此工作流包含的一个或多个作业
 jobs:
   # 定义一个名为 'build_and_publish' 的作业
   build_and_publish:
-    # 指定运行此作业的操作系统环境。
-    # 'ubuntu-latest' 表示使用最新版的 Ubuntu 虚拟机。
-    runs-on: ubuntu-latest 
-    # 作业执行条件：
-    # 仅当触发事件是标签推送，并且标签名以 'refs/tags/v' 开头时，才执行此作业。
-    # 这是一个额外的安全检查，确保只对正确的标签进行发布操作。
+    runs-on: ubuntu-latest # 使用最新的 Ubuntu 运行器
+    # 作业执行条件：仅当触发事件是标签推送，并且标签名以 'refs/tags/v' 开头时，才执行此作业。
     if: startsWith(github.ref, 'refs/tags/v')
 
     # 作业中的步骤：按顺序执行的任务列表
     steps:
     - name: Checkout repository # 步骤名称：检出代码
-      # 使用 GitHub 官方的 'actions/checkout' Action 来获取仓库的代码到工作目录。
       uses: actions/checkout@v4 
 
     - name: Setup .NET SDK # 步骤名称：设置 .NET SDK 环境
-      # 使用 GitHub 官方的 'actions/setup-dotnet' Action 来安装指定版本的 .NET SDK。
       uses: actions/setup-dotnet@v4 
       with:
-        # 指定要安装的 .NET SDK 版本。例如：'6.0.x', '7.0.x', '8.0.x'。
-        # 确保与您的项目目标框架兼容。
-        dotnet-version: '8.0' 
+        dotnet-version: '8.0' # 指定要安装的 .NET SDK 版本。
 
     - name: Extract version from Git tag # 步骤名称：从 Git 标签中提取版本号
-      # 为此步骤指定一个 ID，以便后续步骤可以通过 'steps.get_version.outputs.<output_name>' 引用其输出。
       id: get_version 
       run: |
-        # 'github.ref' 是 GitHub Actions 的内置变量，当通过标签推送触发时，
-        # 其格式为 "refs/tags/vX.Y.Z" (例如 "refs/tags/v1.0.0")。
-        # 'sed' 命令用于去除前缀 "refs/tags/v"，只留下实际的版本号 (例如 "1.0.0")。
         PACKAGE_VERSION=$(echo "${{ github.ref }}" | sed -n 's|^refs/tags/v\(.*\)$|\1|p')
-        # 打印提取到的版本号到日志中，方便调试。
         echo "Extracted package version: $PACKAGE_VERSION"
-        # 将提取到的版本号设置为环境变量 'PACKAGE_VERSION'，
-        # 供当前作业的后续步骤使用。
         echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> "$GITHUB_ENV"
 
+    - name: Copy README.md to project directory # 新增步骤：复制 README.md 到项目目录
+      run: |
+        # 创建项目目录（如果不存在，以防万一）
+        mkdir -p $(dirname ${{ env.PROJECT_PATH }})
+        # 将仓库根目录的 README.md 复制到 .csproj 文件所在的目录
+        cp README.md $(dirname ${{ env.PROJECT_PATH }})/README.md
+        echo "README.md copied to: $(dirname ${{ env.PROJECT_PATH }})/README.md"
+        # 验证文件是否存在（可选，用于调试）
+        ls -l $(dirname ${{ env.PROJECT_PATH }})/README.md
+
     - name: Restore dependencies # 步骤名称：恢复项目依赖
-      # 运行 'dotnet restore' 命令来恢复项目文件 (PROJECT_PATH) 中定义的所有 NuGet 包依赖。
-      # 这是构建项目前的重要步骤。
       run: dotnet restore ${{ env.PROJECT_PATH }} 
 
     - name: Build project # 步骤名称：构建项目
-      # 运行 'dotnet build' 命令来编译项目。
-      # '--configuration ${{ env.BUILD_CONFIGURATION }}' 指定构建配置（例如 Release）。
-      # '--no-restore' 表示不在此步骤中重新恢复依赖，因为上一步已经完成。
       run: dotnet build ${{ env.PROJECT_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore 
 
-    - name: Create NuGet package # 修改步骤：打包 NuGet 包，并使用提取的版本号
+    - name: Create NuGet package # 步骤名称：创建 NuGet 包，并使用提取的版本号
+      # 注意：因为上一步已经将 README.md 复制到项目目录，
+      # 所以 .csproj 中的 <None Include="README.md" Pack="true" PackagePath="\" /> 就能正确工作。
       run: dotnet pack ${{ env.PROJECT_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --output nupkgs -p:Version=${{ env.PACKAGE_VERSION }}
-      # 错误原因：之前的 --version 参数被 MSBuild 错误解析。
-      # 修正方法：使用 -p:Version= 来正确传递版本属性给 MSBuild。
+
     - name: Publish NuGet package # 步骤名称：发布 NuGet 包到 NuGet.org
-      # 运行 'dotnet nuget push' 命令将生成的 .nupkg 文件推送到 NuGet 服务器。
-      # 'nupkgs/*.nupkg' 匹配 'nupkgs' 目录下所有 .nupkg 文件。
-      # '--api-key ${{ secrets.NUGET_API_KEY }}' 通过 GitHub Secrets 安全地传递 NuGet API Key。
-      # '--source https://api.nuget.org/v3/index.json' 指定 NuGet.org 的官方 V3 API 端点。
       run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json 
-      # 定义此步骤特有的环境变量。
       env:
-        # 引用 GitHub 仓库中预先配置的名为 'NUGET_API_KEY' 的 Secret。
-        # 这是一个敏感信息，应通过 Secret 安全存储，而不是直接暴露在 YAML 文件中。
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
