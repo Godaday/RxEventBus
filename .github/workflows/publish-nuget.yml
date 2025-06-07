@@ -9,7 +9,7 @@ on:
       - 'v*.*.*'
 
 env:
-  PROJECT_PATH: 'RxEventbus/RxEventbus.csproj' # 替换为您的项目文件路径
+  PROJECT_PATH: 'RxEventBus/RxEventBus.Core/RxEventBus.Core.csproj' # 替换为您的项目文件路径
   BUILD_CONFIGURATION: 'Release' # 构建配置
 
 jobs:
