@@ -21,7 +21,7 @@
 ```bash
 dotnet add package RxEventbus.Core
 ````
-
+📦 您可以在这里查看 NuGet 包的详细信息：[RxEventbus.Core on NuGet.org](https://www.nuget.org/packages/RxEventbus.Core/)
 ### 2\. 简化服务注册
 
 在您的 `Program.cs` 或 `Startup.cs` 文件中，只需调用 `AddRxEventBus()` 扩展方法即可完成 EventBus 和所有事件处理程序的注册。确保您的 `RxEventbus.Core` 项目中包含一个名为 `AddRxEventBus` 的静态扩展方法，它内部会调用 `AddEventBus()` 和 `AddAppEventHandlers()`。
