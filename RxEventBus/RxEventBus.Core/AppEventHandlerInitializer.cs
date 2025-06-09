@@ -24,41 +24,40 @@ namespace RxEventBus.Core
             _serviceProvider = serviceProvider;
             _eventBus = eventBus;
         }
-        /// <summary>
-        /// 服务执行
-        /// </summary>
-        /// <param name="stoppingToken"></param>
-        /// <returns></returns>
+
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             using var scope = _serviceProvider.CreateScope();
-
             var serviceProvider = scope.ServiceProvider;
 
-            var handlerTypes = Assembly.GetExecutingAssembly()
-                .GetTypes()
+            var handlerTypes = AppDomain.CurrentDomain.GetAssemblies()
+                .Where(assembly => !assembly.IsDynamic && !string.IsNullOrEmpty(assembly.Location))
+                .SelectMany(assembly => assembly.GetTypes())
                 .Where(t => !t.IsAbstract && !t.IsInterface)
                 .SelectMany(t => t.GetInterfaces(), (t, i) => new { Type = t, Interface = i })
                 .Where(x => x.Interface.IsGenericType && x.Interface.GetGenericTypeDefinition() == typeof(IAppEventHandler<>))
-                .Select(x => new { Implementation = x.Type, Interface = x.Interface })
+                .Select(x => x.Type)
                 .Distinct()
                 .ToList();
 
-            foreach (var handler in handlerTypes)
+            Console.WriteLine("\n--- AppEventHandlerInitializer: Discovered Handlers ---"); // 改为 Console.WriteLine
+            foreach (var handlerImplementationType in handlerTypes)
             {
-                // 通过接口类型解析服务（
-                var handlerInstance = serviceProvider.GetRequiredService(handler.Implementation);
+                Console.WriteLine($"[Initializer] Discovered handler: {handlerImplementationType.FullName}"); 
 
-                var eventType = (AppEventType)handler.Interface
-                    .GetProperty("EventType")!
-                    .GetValue(handlerInstance)!;
+                var handlerInstance = serviceProvider.GetRequiredService(handlerImplementationType);
+                var eventPayloadType = handlerImplementationType
+                    .GetInterfaces()
+                    .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IAppEventHandler<>))
+                    .GetGenericArguments()[0];
 
                 var method = typeof(AppEventHandlerInitializer)
                     .GetMethod(nameof(SubscribeGeneric), BindingFlags.Instance | BindingFlags.NonPublic)!
-                    .MakeGenericMethod(handler.Interface.GetGenericArguments()[0]);
+                    .MakeGenericMethod(eventPayloadType);
 
-                method.Invoke(this, new object[] { handlerInstance, eventType });
+                method.Invoke(this, new object[] { handlerInstance });
             }
+            Console.WriteLine("--- AppEventHandlerInitializer: Handler Discovery Complete ---\n"); 
 
             return Task.CompletedTask;
         }
@@ -69,11 +68,11 @@ namespace RxEventBus.Core
         /// <typeparam name="T"></typeparam>
         /// <param name="handlerObj"></param>
         /// <param name="type"></param>
-        private void SubscribeGeneric<T>(object handlerObj, AppEventType type)
+        private void SubscribeGeneric<T>(object handlerObj)
         {
             var handler = (IAppEventHandler<T>)handlerObj;
 
-            _eventBus.Listen<T>(type).ObserveOn(Scheduler.Default).Subscribe(
+            _eventBus.Listen<T>().ObserveOn(Scheduler.Default).Subscribe(
                 async evt =>
                 {
                     try
@@ -84,15 +83,19 @@ namespace RxEventBus.Core
                     {
                         await handler.OnErrorAsync(evt, ex);
                     }
+                    finally 
+                    {
+                        await handler.OnEventHandledAsync(evt);
+                    }
                 },
                 async ex =>
                 {
-                    await handler.OnErrorAsync(new AppEvent<T>(type, default(T)!), ex);
+                    await handler.OnErrorAsync(new AppEvent<T>( default(T)!), ex);
 
                 },
                 async () =>
                 {
-                    await handler.OnCompletedAsync(type);
+                    await handler.OnCompletedAsync(new AppEvent<T>(default(T)!));
                 }
             );
         }

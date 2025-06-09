@@ -6,10 +6,7 @@ namespace RxEventBus.Core.Events
     /// </summary>
     public interface IAppEvent
     {
-        /// <summary>
-        /// 时间类型
-        /// </summary>
-        AppEventType Type { get; }
+     
         /// <summary>
         /// 事件负载
         /// </summary>
@@ -25,10 +22,7 @@ namespace RxEventBus.Core.Events
     /// <typeparam name="TPayload"></typeparam>
     public class AppEvent<TPayload> : IAppEvent
     {
-        /// <summary>
-        /// EventType
-        /// </summary>
-        public AppEventType Type { get; }
+       
         /// <summary>
         /// 事件Payload
         /// </summary>
@@ -46,9 +40,9 @@ namespace RxEventBus.Core.Events
         /// </summary>
         /// <param name="eventType">事件类型</param>
         /// <param name="payload">事件Payload参数</param>
-        public AppEvent(AppEventType eventType, TPayload payload)
+        public AppEvent( TPayload payload)
         {
-            Type = eventType;
+           
             Payload = payload;
         }
     }

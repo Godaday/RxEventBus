@@ -28,12 +28,12 @@ namespace RxEventBus.Core
         /// <typeparam name="T"></typeparam>
         /// <param name="filterType"></param>
         /// <returns></returns>
-        public IObservable<AppEvent<T>> Listen<T>(AppEventType? filterType = null)
+        public IObservable<AppEvent<T>> Listen<T>()
         {
-            var stream = _subject.OfType<AppEvent<T>>();
-            return filterType.HasValue
-                ? stream.Where(e => e.Type  == filterType.Value)
-                : stream;
+            return _subject.OfType<AppEvent<T>>();
+            //return filterType.HasValue
+            //    ? stream.Where(e => e.Type  == filterType.Value)
+            //    : stream;
         }
         /// <summary>
         /// 订阅所有事件

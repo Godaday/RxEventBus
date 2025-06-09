@@ -5,6 +5,8 @@ VisualStudioVersion = 17.13.35931.197 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RxEventBus.Core", "RxEventBus.Core\RxEventBus.Core.csproj", "{43AF5D6D-82FA-4569-B9CD-978EE7D06DFD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RxEventbus.Tests", "RxEventbus.Tests\RxEventbus.Tests.csproj", "{F958840B-EFAD-433E-8CF8-5BF39F6C9D18}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{43AF5D6D-82FA-4569-B9CD-978EE7D06DFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43AF5D6D-82FA-4569-B9CD-978EE7D06DFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43AF5D6D-82FA-4569-B9CD-978EE7D06DFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F958840B-EFAD-433E-8CF8-5BF39F6C9D18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F958840B-EFAD-433E-8CF8-5BF39F6C9D18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F958840B-EFAD-433E-8CF8-5BF39F6C9D18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F958840B-EFAD-433E-8CF8-5BF39F6C9D18}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

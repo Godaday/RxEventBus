@@ -21,7 +21,7 @@ namespace RxEventBus.Core
         /// <typeparam name="T"></typeparam>
         /// <param name="filterType"></param>
         /// <returns></returns>
-        IObservable<AppEvent<T>> Listen<T>(AppEventType? filterType = null);
+        IObservable<AppEvent<T>> Listen<T>();
         /// <summary>
         /// 订阅所有事件
         /// </summary>
