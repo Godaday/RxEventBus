@@ -16,14 +16,14 @@ namespace RxEventBus.Core
         {
             services.AddSingleton<IAppEventBus, AppEventBus>();
 
-
-            var handlerTypes = Assembly.GetExecutingAssembly()
-                .GetTypes()
-                .Where(t => !t.IsAbstract && !t.IsInterface)
-                .SelectMany(t => t.GetInterfaces(), (t, i) => new { Type = t, Interface = i })
-                .Where(x => x.Interface.IsGenericType && x.Interface.GetGenericTypeDefinition() == typeof(IAppEventHandler<>))
-                .Select(x => x.Type)
-                .Distinct();
+            var handlerTypes = AppDomain.CurrentDomain.GetAssemblies()
+              .Where(assembly => !assembly.IsDynamic && !string.IsNullOrEmpty(assembly.Location)) // 过滤掉动态程序集和没有文件路径的程序集
+              .SelectMany(assembly => assembly.GetTypes())
+              .Where(t => !t.IsAbstract && !t.IsInterface)
+              .SelectMany(t => t.GetInterfaces(), (t, i) => new { Type = t, Interface = i })
+              .Where(x => x.Interface.IsGenericType && x.Interface.GetGenericTypeDefinition() == typeof(IAppEventHandler<>))
+              .Select(x => x.Type)
+              .Distinct();
 
             foreach (var handler in handlerTypes)
             {
