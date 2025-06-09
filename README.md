@@ -39,7 +39,7 @@ dotnet add package RxEventbus.Core
  }
 ```
 
-### 3\. 定义布事件
+### 3\. 定义事件
 
 ```C#
   // 假设这是入库事件的Payload
@@ -47,17 +47,11 @@ dotnet add package RxEventbus.Core
   var stockInEvent = new AppEvent<StockInEvent>(new StockInEvent(101, 50, "仓库A"));
 ```
 
-
-
-```csharp
-
-```
-
-然后，为您的事件定义一个 `Payload` 类型对象。这是一个简单的 C\# `record` 示例，推荐将其定义在您应用程序的领域模型或约定好的事件目录中：
+然后，为您的事件定义一个 `Event` 类型对象。这是一个简单的 C\# `record` 示例，推荐将其定义在您应用程序的领域模型或约定好的事件目录中。
 
 ### 4\. 发布事件
 
-通过依赖注入获取 `IAppEventBus` 实例，然后调用其 `Publish` 方法并传入您的 `Payload` 类型对象。事件总线会自动包装您的 `Payload` 到 `AppEvent<TPayload>` 中。
+通过依赖注入获取 `IAppEventBus` 实例，然后调用其 `Publish` 方法并传入您的 `Event` 类型对象。事件总线会自动包装您的 `Event` 到 `AppEvent<Event>` 中。
 
 ```csharp
 using RxEventbus.Core.Events; // 确保添加此 using 引用
@@ -84,7 +78,7 @@ public class OrderService
 
 ### 5\. 处理事件
 
-要处理事件，您只需创建一个类并实现 `IAppEventHandler<T>` 接口，其中 `T` 是您事件的 `Payload` 类型。该处理器将在应用启动时被自动发现和注册。
+要处理事件，您只需创建一个类并实现 `IAppEventHandler<T>` 接口，其中 `T` 是您事件的 `Event` 类型。该处理器将在应用启动时被自动发现和注册。
 
 ```C#
   public class TestStockInEventHandler : IAppEventHandler<StockInEvent>
