@@ -1,4 +1,4 @@
-
+# 简体中文 | [English](README.en-us.md)
 
 # RxEventbus
 
@@ -91,7 +91,7 @@ public class OrderService
   }
 ```
 
-## Console
+##  🐛  Console
 
 ```C#
 已发布入库事件: 产品ID=101
