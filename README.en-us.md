@@ -108,7 +108,7 @@ public class TestStockInEventHandler : IAppEventHandler<StockInEvent>
 }
 ```
 
-## Console Output
+## 🐛  Console Output
 
 ```
 Published Stock In Event: Product ID=101
