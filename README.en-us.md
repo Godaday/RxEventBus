@@ -1,4 +1,4 @@
-                                                                     # [English] | [简体中文](./README.md)
+# English | [简体中文](./README.md)
 # RxEventbus
 
 A lightweight Rx.NET EventBus designed to help .NET applications achieve low coupling, asynchronous communication, and high extensibility between modules.
