@@ -47,12 +47,6 @@ dotnet add package RxEventbus.Core
   var stockInEvent = new AppEvent<StockInEvent>(new StockInEvent(101, 50, "仓库A"));
 ```
 
-
-
-```csharp
-
-```
-
 然后，为您的事件定义一个 `Payload` 类型对象。这是一个简单的 C\# `record` 示例，推荐将其定义在您应用程序的领域模型或约定好的事件目录中：
 
 ### 4\. 发布事件
