@@ -5,7 +5,7 @@ A lightweight System.Reactive EventBus designed to help .NET applications achiev
 
 ## 🚀 Core Features
 
-* **Lightweight and Efficient**: Built upon Reactive Extensions for .NET (System.Reactive .net ), providing an efficient event publishing and subscription mechanism.
+* **Lightweight and Efficient**: Built upon Reactive Extensions for .NET (System.Reactive .net ), providing an efficient and simple event publishing and subscription mechanism.
 * **Module Decoupling**: Achieves indirect communication between modules through an event-driven architecture, effectively reducing code coupling.
 * **Asynchronous Event Handling**: Supports asynchronous event handlers, ensuring event processing does not block the main thread.
 * **Automatic Registration and Subscription**: Automatically discovers and registers all event handlers, subscribing them upon application startup.
