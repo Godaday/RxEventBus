@@ -35,31 +35,19 @@ public abstract class BaseRxPayloadClass
 /// <summary>
 /// 事件负载基类
 /// </summary>
-public abstract record BaseRxPayload
+public abstract record BaseEventPayload : IBaseEventPayload
 {
-    protected BaseRxPayload(string userId, DateTime occurredTimestamp)
-    {
-        UserId = userId;
-        BusinessOccurredUtcTimestamp = occurredTimestamp;
-    }
-    protected BaseRxPayload()
-    { }
+    string IBaseEventPayload.EventId => throw new NotImplementedException();
 
+    DateTime IBaseEventPayload.OccurredUtcTimestamp => throw new NotImplementedException();
 
-    /// <summary>
-    /// 业务事件实际发生的UTC时间戳
-    /// </summary>
-    public DateTime BusinessOccurredUtcTimestamp { get; init; } = DateTime.UtcNow; 
+    string IBaseEventPayload.InitiatorId => throw new NotImplementedException();
 
-    /// <summary>
-    /// 关联到此业务事件的用户唯一标识符。
-    /// </summary>
-    public string? UserId { get; init; } 
+    string IBaseEventPayload.InitiatorType => throw new NotImplementedException();
 
-    /// <summary>
-    /// 关联ID。
-    /// 用于追踪跨服务或跨模块的单个逻辑请求流
-    /// </summary>
-    public string? CorrelationId { get; init; }
-  
+    string? IBaseEventPayload.InitiatorName => throw new NotImplementedException();
+
+    string? IBaseEventPayload.CorrelationId => throw new NotImplementedException();
+
+    string? IBaseEventPayload.CausationId => throw new NotImplementedException();
 }
